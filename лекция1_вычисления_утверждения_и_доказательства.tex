@@ -1,0 +1,372 @@
+% Сборка: latexmk лекция1_вычисления_утверждения_и_доказательства.tex
+\documentclass[aspectratio=169]{beamer}
+\input{lecture_preamble}
+\title{Вычисления, утверждения и доказательства}
+\date{Лекция 1}
+\begin{document}
+\maketitle
+% --- Слайд 1. Установка Lean в VS Code или VSCodium
+\begin{frame}[fragile]{Установка Lean в VS Code или VSCodium}
+\begin{enumerate}
+\item Установите \href{https://code.visualstudio.com/download}{VS Code} и \href{https://marketplace.visualstudio.com/items?itemName=leanprover.lean4}{расширение Lean 4}. Можно выбрать \href{https://vscodium.com/}{VSCodium} и установить \href{https://open-vsx.org/extension/leanprover/lean4}{то же расширение из Open VSX}.
+\item Скачайте \href{https://github.com/alexeyr/miet-lean-course}{репозиторий курса} через \textit{Code → Download ZIP} и распакуйте архив (или клонируйте репозиторий). Через \textit{File → Open Folder} откройте папку с \texttt{lakefile.toml}.
+\item Откройте \texttt{Лекция1.lean}. Для установки Lean выберите в меню \(\forall\) пункт \textit{Documentation → Show Setup Guide}.
+\item В терминале редактора выполните команду \texttt{lake exe cache get} с аргументами, указанными в начале \texttt{Лекция1.lean}.
+\end{enumerate}
+Пока идёт загрузка, можно работать в \href{https://live.lean-lang.org/}{Lean Playground}.
+\quad\href{https://lean-lang.org/install/}{Инструкция по установке}
+\end{frame}
+
+% --- Слайд 2. Первые команды в Lean Playground
+\begin{frame}[fragile]{Первые команды в Lean Playground}
+В \href{https://live.lean-lang.org/}{Lean Playground} выберите среду с Mathlib и начните с \leaninline|import Mathlib|. В файле курса \texttt{Лекция1.lean} найдите комментарий «Слайд 2».
+
+Поставьте курсор на команду и посмотрите ответ в InfoView.
+
+\leaninline|#eval 2 + 3 * 4| \qquad \uncover<2->{\texttt{14}}
+
+\onslide<2->
+Как изменится результат, если взять сумму в скобки?
+
+\leaninline|#eval (2 + 3) * 4| \qquad \uncover<3->{\texttt{20}}
+
+\onslide<3->
+\leaninline|#check (2 + 3) * 4| \qquad \uncover<4->{\texttt{(2 + 3) * 4 : ℕ}}
+
+\onslide<4->
+При \leaninline|import Mathlib| Lean выводит тип \leaninline|Nat| как \leaninline|ℕ|.
+
+При наведении на выражение виден его тип, а на имя — ещё и документация, если она есть.
+\end{frame}
+
+% --- Слайд 3. Выражения, типы и универсумы
+\begin{frame}[fragile]{Выражения, типы и универсумы}
+Запись \leaninline|e : T| читается «выражение \leaninline|e| имеет тип \leaninline|T|». Например, \leaninline|(2 : Nat)| обозначает число 2 типа \leaninline|Nat|.
+
+Типы тоже являются выражениями. Какой тип у самого \leaninline|Nat|?
+
+\leaninline|#check Nat| \qquad \uncover<2->{\texttt{Nat : Type}}
+
+\onslide<2->
+\leaninline|#check Type| \qquad \uncover<3->{\texttt{Type : Type 1}}
+
+\onslide<3->
+\textbf{Универсум} — это тип, элементами которого являются типы. Например, \leaninline|Nat| и \leaninline|Int| принадлежат универсуму \leaninline|Type|. Сам \leaninline|Type| принадлежит следующему универсуму \leaninline|Type 1|.
+
+\end{frame}
+
+% --- Слайд 4. Вычитание и типы операндов
+\begin{frame}[fragile]{Вычитание и типы операндов}
+Какой тип и какое значение получит каждое выражение?
+
+\leaninline|(2 : Int) - 7|
+\uncover<2->{\qquad \texttt{-5 : Int}}
+
+\onslide<2->
+Тип первого операнда задаёт тип второго: здесь \leaninline|7| имеет тип \leaninline|Int|.
+
+\leaninline|2 - 7|
+\uncover<3->{\qquad \texttt{0 : Nat}}
+
+\onslide<3->
+Для записей вроде \leaninline|2| и \leaninline|7| Lean по умолчанию выбирает \leaninline|Nat|, если их тип не задан контекстом. В натуральных числах вычитание ограничено снизу нулём.
+
+Что произойдёт, если у операндов разные типы?
+
+\leaninline|(2 : Nat) - (7 : Int)|
+\uncover<4->{\qquad \texttt{-5 : Int}}
+
+\end{frame}
+
+% --- Слайд 5. Приведение типов
+\begin{frame}[fragile]{Приведение типов}
+Как Lean вычитает целое число из натурального?
+\begin{lean}
+#check (2 : Nat) - (7 : Int)
+\end{lean}
+\pause
+\begin{leanoutput}
+↑2 - 7 : ℤ
+\end{leanoutput}
+Знак \leaninline|↑| показывает, где Lean вставил \textbf{приведение типов}: он преобразовал натуральное число \leaninline|2| в целое. Вычитание даёт результат типа \leaninline|Int|, который mathlib обозначает \leaninline|ℤ|.
+
+В выражении \leaninline|(2 : Int) - 7| литерал \leaninline|7| сразу получает тип \leaninline|Int| из контекста.
+
+Наберите сокращение и нажмите пробел: \leaninput{N} для ℕ, \leaninput{Z} для ℤ, \leaninput{coe} для ↑.
+Полный список в VS Code: \texttt{Ctrl+Shift+P} → \textit{Show Unicode Input Abbreviations}. См. также \href{https://github.com/leanprover/vscode-lean4/blob/master/lean4-unicode-input/src/abbreviations.json}{таблицу на GitHub}.
+\end{frame}
+
+% --- Слайд 6. Определение функции
+\begin{frame}[fragile]{Определение функции}
+\begin{lean}
+def addOne (n : Nat) : Nat :=
+  n + 1
+
+#eval addOne 4
+\end{lean}
+\leaninline|def| вводит имя. В скобках стоят имя параметра и его тип. После скобок указан тип результата, после \leaninline|:=| записано тело.
+
+\pause
+При вызове \leaninline|addOne 4| параметр получает значение \texttt{4}, и команда выдаёт \texttt{5}.
+\end{frame}
+
+% --- Слайд 7. Применение и скобки
+\begin{frame}[fragile]{Применение и скобки}
+\begin{lean}
+def square (n : Nat) : Nat := n * n
+
+#eval square 3 + 1
+#eval square (3 + 1)
+#eval square (square 3)
+\end{lean}
+Применение функции связывает сильнее, чем сложение. Запись \leaninline|square 3 + 1| означает \leaninline|(square 3) + 1|.
+\pause
+Первое значение равно \texttt{10}.
+\pause
+Во второй строке сначала вычисляется сумма, поэтому результат равен \texttt{16}.
+
+Что нужно вычислить первым в последней строке? Каким будет окончательный ответ? \pause Получим \texttt{9}, затем \texttt{81}.
+\end{frame}
+
+% --- Слайд 8. Функция как аргумент
+\begin{frame}[fragile]{Функция как аргумент}
+\begin{lean}
+def twiceNat (f : Nat → Nat) (x : Nat) : Nat :=
+  f (f x)
+
+#check twiceNat addOne
+#eval twiceNat addOne 3
+\end{lean}
+Тип \leaninline|Nat → Nat| описывает функцию с одним натуральным аргументом и натуральным результатом. Для ввода стрелки используйте \leaninput{to}.
+
+\pause
+После передачи \leaninline|addOne| остаётся функция типа \leaninline|Nat → Nat|. \pause Применив её к \texttt{3}, получим \texttt{5}.
+\end{frame}
+
+% --- Слайд 9. Функция без имени
+\begin{frame}[fragile]{Функция без имени}
+\begin{lean}
+#eval twiceNat (fun n => n * 2) 3
+#eval twiceNat (fun n => n + n + 1) 3
+\end{lean}
+В выражении \leaninline|fun n => n * 2| слева от \leaninline|=>| записан параметр, справа — результат. Тип параметра здесь известен из типа \leaninline|twiceNat|.
+
+\pause
+В первом примере промежуточное значение равно \texttt{6}, окончательное — \texttt{12}. Найдите оба значения во втором примере. \pause Получим \texttt{7}, затем \texttt{15}.
+\end{frame}
+
+% --- Слайд 10. Какой тип нужен для двукратного применения?
+\begin{frame}[fragile]{Какой тип нужен для двукратного применения?}
+\begin{lean}
+def twice {α : Type} (f : α → α) (x : α) : α :=
+  f (f x)
+
+#eval twice addOne 10
+#eval twice (fun b => !b) true
+\end{lean}
+\leaninline|α : Type| — произвольный тип (\leaninput{alpha} для α). Тип \leaninline|f : α → α| позволяет снова передать результат функции на вход.
+
+Фигурные скобки объявляют неявный параметр. \pause
+В первом вызове Lean подставляет \leaninline|Nat| и получает \texttt{12}.
+\pause
+Во втором — \leaninline|Bool| и получает \leaninline|true|.
+
+\pause
+Укажем тип по имени:\quad
+\leaninline|#eval twice (α := Nat) addOne 10| \qquad \texttt{12}
+\end{frame}
+
+% --- Слайд 11. Что именно проверяет Lean?
+\begin{frame}[fragile]{Что именно проверяет Lean?}
+\begin{lean}
+#eval twice addOne 3 = 5
+\end{lean}
+\begin{itemize}
+\item \leaninline|#eval| проверяет равенство вычислением и выводит \leaninline|true|.
+\end{itemize}
+\begin{uncoverenv}<2->
+\begin{lean}
+#check twice addOne 3 = 5
+\end{lean}
+\begin{itemize}
+\item \leaninline|#check| сообщает, что равенство имеет тип \leaninline|Prop|. Тип \leaninline|Prop| имеют и ложные утверждения.
+\end{itemize}
+\end{uncoverenv}
+\begin{uncoverenv}<3->
+\begin{lean}
+  example                 : twice addOne 3 = 5 := by rfl
+  theorem twice_addOne_3  : twice addOne 3 = 5 := by rfl
+\end{lean}
+\begin{itemize}
+\item Обе записи требуют доказательства. \leaninline|example| анонимен, а \leaninline|theorem| даёт теореме имя. В следующих доказательствах можно сослаться на \leaninline|twice_addOne_3|.
+\end{itemize}
+\end{uncoverenv}
+\end{frame}
+
+% --- Слайд 12. Из чего состоит доказательство
+\begin{frame}[fragile]{Из чего состоит доказательство}
+\begin{lean}
+example (n : Nat) : addOne n = n + 1 := by
+  rfl
+\end{lean}
+Параметр \leaninline|n| произволен. За двоеточием после параметра стоит утверждение. Справа от \leaninline|:=| нужно предъявить его доказательство.
+
+\leaninline|by| открывает блок тактик. Тактика \leaninline|rfl| закрывает равенство, если обе стороны совпадают с точностью до вычисления. Здесь достаточно раскрыть определение \leaninline|addOne|.
+\end{frame}
+
+% --- Слайд 13. Читаем цель в InfoView
+\begin{frame}[fragile]{Читаем цель в InfoView}
+\begin{onlyenv}<1>
+\begin{lean}
+example (n : Nat) : addOne n = n + 1 := by
+  sorry
+\end{lean}
+\end{onlyenv}
+\begin{onlyenv}<2>
+\begin{lean}
+example (n : Nat) : addOne n = n + 1 := by
+  rfl
+\end{lean}
+\end{onlyenv}
+Поставьте курсор перед тактикой. Над знаком \leaninline|⊢| видны данные и гипотезы, после него — цель.
+\begin{leanoutput}
+n : Nat
+⊢ addOne n = n + 1
+\end{leanoutput}
+\leaninline|sorry| оставляет пропуск в доказательстве. Lean принимает объявление с предупреждением \texttt{declaration uses 'sorry'} и продолжает проверять файл.
+
+\uncover<2->{Замените \leaninline|sorry| на \leaninline|rfl|. Раскрытие \leaninline|addOne| доказывает равенство. После этого шага цель закрыта, а предупреждение исчезает.}
+\end{frame}
+
+% --- Слайд 14. От вычисления к общему утверждению
+\begin{frame}[fragile]{От вычисления к общему утверждению}
+\begin{lean}
+example {α : Type} (f : α → α) (x : α) :
+    twice f x = f (f x) := by
+  rfl
+\end{lean}
+Раскройте \leaninline|twice| в левой части. По обе стороны останется \leaninline|f (f x)|, даже когда значения \leaninline|f| и \leaninline|x| неизвестны.
+
+Как выбор \leaninline|α| определяет типы \leaninline|f| и \leaninline|x|? Почему одно и то же доказательство \leaninline|rfl| подходит для любых \leaninline|α|, \leaninline|f| и \leaninline|x|?
+\end{frame}
+
+% --- Слайд 15. Разбираем неудачную попытку
+\begin{frame}[fragile]{Разбираем неудачную попытку}
+Замените правую часть предыдущего утверждения на \leaninline|f x|. После раскрытия определения тактике пришлось бы доказать
+\begin{leanoutput}
+⊢ f (f x) = f x
+\end{leanoutput}
+Проверьте кандидата в контрпримеры.
+\begin{lean}
+#eval twice addOne 3
+#eval addOne 3
+\end{lean}
+\pause
+Первое вычисление даёт \texttt{5}. \pause Второе даёт \texttt{4}. Здесь ошибка в самом утверждении. Верните исходную правую часть, прежде чем двигаться дальше.
+\end{frame}
+
+% --- Слайд 16. Когда утверждение верно, а шаг не проходит
+\begin{frame}[fragile]{Когда утверждение верно, а шаг не проходит}
+\begin{lean}
+example (a b : Nat) : a + b = b + a := by
+  rfl
+\end{lean}
+\pause
+\leaninline|rfl| закрывает цель, когда обе стороны совпадают после вычисления. При произвольных \leaninline|a| и \leaninline|b| выражения \leaninline|a + b| и \leaninline|b + a| остаются разными.
+
+\pause
+\begin{lean}
+example (a b : Nat) : a + b = b + a := by
+  exact Nat.add_comm a b
+\end{lean}
+Теорема о коммутативности даёт \leaninline|Nat.add_comm a b| типа \leaninline|a + b = b + a|. Тактика \leaninline|exact| закрывает цель этим доказательством.
+\end{frame}
+
+% --- Слайд 17. Как переписать выражение с помощью rw?
+\begin{frame}[fragile]{Как переписать выражение с помощью rw?}
+\begin{leansmall}
+example (a b : ℝ) :
+    (a + b)^2 = a^2 + 2*a*b + b^2 := by
+  rw [pow_two, add_mul, mul_add, mul_add, mul_comm b a,
+      pow_two, pow_two, two_mul, add_mul,
+      ← add_assoc, add_assoc (a * a)]
+\end{leansmall}
+Для вещественных чисел: \leaninline|pow_two (x : ℝ) : x ^ 2 = x * x|.
+
+Поставьте курсор после первого \leaninline|pow_two|. В InfoView видна цель:
+\begin{leanoutputsmall}
+a b : ℝ
+⊢ (a + b) * (a + b) = a ^ 2 + 2 * a * b + b ^ 2
+\end{leanoutputsmall}
+Дальше \leaninline|rw| применяет равенства по порядку. Стрелка \leaninline|←| меняет направление замены.
+
+Какое переписывание превращает \(ba\) в \(ab\)?
+\end{frame}
+
+% --- Слайд 18. Как не перечислять все равенства?
+\begin{frame}[fragile]{Как не перечислять все равенства?}
+\begin{lean}
+example (a b : ℝ) :
+    (a + b)^2 = a^2 + 2*a*b + b^2 := by
+  ring
+\end{lean}
+При раскрытии квадрата получаем \(a^2+ab+ba+b^2\).
+Коммутативность даёт \(ba=ab\). Тактика \leaninline|ring| приводит обе стороны полиномиального равенства к общей нормальной форме и строит доказательство, которое проверяет ядро Lean.
+
+\pause
+Верна ли эта формула для матриц \leaninline|A B : Matrix (Fin 2) (Fin 2) ℝ|?
+
+\leaninline|Fin 2| — тип с двумя значениями: 0 и 1. Первый \leaninline|Fin 2| задаёт индексы строк, второй — столбцов. Получается вещественная матрица \(2\times2\).
+\end{frame}
+
+% --- Слайд 19. Самостоятельно: два способа прибавить четыре
+\begin{frame}[fragile]{Самостоятельно: два способа прибавить четыре}
+\begin{lean}
+def addTwo (n : Nat) : Nat := n + 2
+\end{lean}
+\begin{enumerate}
+\item Вычислите \leaninline|twice addTwo 5|. Сформулируйте, чему равно \leaninline|twice addTwo n| для произвольного \leaninline|n : Nat|, и докажите это с помощью \leaninline|rfl|.
+\item Для произвольного \leaninline|x : ℝ| запишите равенство \((x+2)+2=x+4\) и выберите тактику. Объясните, откуда взялась четвёрка.
+\end{enumerate}
+\pause
+\leaninline|#eval twice addTwo 5| даёт \texttt{9}.
+\end{frame}
+
+% --- Слайд 20. Проверяем решения
+\begin{frame}[fragile]{Проверяем решения}
+\begin{lean}
+example (n : Nat) :
+    twice addTwo n = (n + 2) + 2 := by
+  rfl
+
+example (x : ℝ) : (x + 2) + 2 = x + 4 := by
+  ring
+\end{lean}
+В первом случае раскрываются два определения: \leaninline|twice| и \leaninline|addTwo|. Во втором приводятся подобные слагаемые.
+\end{frame}
+
+% --- Слайд 21. От утверждения к доказательству
+\begin{frame}{От утверждения к доказательству}
+\begin{block}{Утверждение}
+У каждого вещественного числа есть число больше него.
+\end{block}
+
+\begin{enumerate}
+\item Какой тип в Lean имеет это утверждение?
+\item Какие данные должен предоставить автор доказательства?
+\end{enumerate}
+\end{frame}
+
+% --- Слайд 22. Что почитать и где попрактиковаться
+\begin{frame}{Что почитать и где попрактиковаться}
+\begin{itemize}
+\item \href{https://lean-lang.org/theorem_proving_in_lean4/Dependent-Type-Theory/}{Theorem Proving in Lean 4, глава 2}. После лекции прочитайте разделы 2.1–2.4 о типах, функциях и вычислениях. Раздел 2.9 объясняет неявный аргумент \texttt{α} в нашем примере \texttt{twice}.
+\item \href{https://adam.math.hhu.de/}{Lean Game Server}. Начните с \textit{Natural Number Game}, чтобы потренироваться доказывать свойства натуральных чисел.
+\item \href{https://lean-lang.org/learn/}{Learn Lean}. Здесь собраны учебники по программированию на Lean и формализации математики.
+\item \href{https://leanprover-community.github.io/}{Lean Community}. Здесь можно найти документацию mathlib и задать вопрос в чате Zulip.
+\begin{itemize}
+\item \href{https://leanprover-community.github.io/learn.html}{Учебные материалы сообщества}
+\end{itemize}
+\end{itemize}
+\end{frame}
+\end{document}

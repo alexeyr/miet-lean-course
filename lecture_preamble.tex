@@ -31,6 +31,8 @@
 \newminted[leansmall]{lean4}{fontsize=\footnotesize}
 \newminted[leantiny]{lean4}{fontsize=\scriptsize}
 \newmintinline[leaninline]{lean4}{breaklines=true}
+\definecolor{leaninputcolor}{HTML}{006D77}
+\newcommand{\leaninput}[1]{\textcolor{leaninputcolor}{\texttt{\bfseries\textbackslash#1}}}
 
 % Вывод #eval, сообщения Lean и состояния целей.
 \newminted[leanoutput]{text}{autogobble=true,fontsize=\small}
