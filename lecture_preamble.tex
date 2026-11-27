@@ -1,0 +1,73 @@
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[utf8]{inputenc}
+  \usepackage[T1,T2A]{fontenc}
+\else
+  \usepackage{fontspec}
+\fi
+\usepackage[russian]{babel}
+\usepackage{color}
+\usepackage{calc}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{hyperref}
+\hypersetup{unicode,colorlinks}
+\usetheme[progressbar=head,numbering=fraction,block=fill]{metropolis}
+\usepackage{minted}
+\ifPDFTeX
+  \usepackage{dejavu}
+\else
+  \setsansfont{DejaVu Sans}
+  \setmonofont{DejaVu Sans Mono}
+\fi
+%\usepackage{adjustbox}  % Позволяет сузить куски кода (или текст) ровно настолько, чтобы уместиться в слайд
+\usepackage{csquotes}
+\usepackage{upquote}
+
+\usemintedstyle{solarized-light}
+% Для слайдов с блоками кода используйте \begin{frame}[fragile].
+\setminted[lean4]{autogobble=true,breaklines=false}
+\newminted[lean]{lean4}{fontsize=\small}
+\newminted[leansmall]{lean4}{fontsize=\footnotesize}
+\newminted[leantiny]{lean4}{fontsize=\scriptsize}
+\newmintinline[leaninline]{lean4}{breaklines=true}
+
+% Вывод #eval, сообщения Lean и состояния целей.
+\newminted[leanoutput]{text}{autogobble=true,fontsize=\small}
+\newminted[leanoutputsmall]{text}{autogobble=true,fontsize=\footnotesize}
+\newminted[leanoutputtiny]{text}{autogobble=true,fontsize=\scriptsize}
+\newmintinline[leanoutputinline]{text}{breaklines=true}
+
+% Частые символы Lean в листингах при сборке pdfLaTeX.
+\ifPDFTeX
+  \usepackage{amssymb}
+  \DeclareUnicodeCharacter{2192}{\ensuremath{\to}}
+  \DeclareUnicodeCharacter{2190}{\ensuremath{\leftarrow}}
+  \DeclareUnicodeCharacter{21D2}{\ensuremath{\Rightarrow}}
+  \DeclareUnicodeCharacter{2194}{\ensuremath{\leftrightarrow}}
+  \DeclareUnicodeCharacter{2200}{\ensuremath{\forall}}
+  \DeclareUnicodeCharacter{2203}{\ensuremath{\exists}}
+  \DeclareUnicodeCharacter{2227}{\ensuremath{\land}}
+  \DeclareUnicodeCharacter{2228}{\ensuremath{\lor}}
+  \DeclareUnicodeCharacter{00AC}{\ensuremath{\neg}}
+  \DeclareUnicodeCharacter{2260}{\ensuremath{\ne}}
+  \DeclareUnicodeCharacter{2264}{\ensuremath{\le}}
+  \DeclareUnicodeCharacter{2265}{\ensuremath{\ge}}
+  \DeclareUnicodeCharacter{2208}{\ensuremath{\in}}
+  \DeclareUnicodeCharacter{22A2}{\ensuremath{\vdash}}
+  \DeclareUnicodeCharacter{2115}{\ensuremath{\mathbb{N}}}
+  \DeclareUnicodeCharacter{03B1}{\ensuremath{\alpha}}
+  \DeclareUnicodeCharacter{03B2}{\ensuremath{\beta}}
+  \DeclareUnicodeCharacter{27E8}{\ensuremath{\langle}}
+  \DeclareUnicodeCharacter{27E9}{\ensuremath{\rangle}}
+\fi
+
+\vfuzz=20pt  % позволяет тексту дойти до номера слайда
+
+\author{Алексей Романов}
+\subtitle{Программирование и доказательства на Lean 4}
+%\logo{}
+\institute{МИЭТ}
+\subject{Программирование и доказательства на Lean 4}
+%\setbeamercovered{transparent}
+%\setbeamertemplate{navigation symbols}{}
