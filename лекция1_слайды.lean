@@ -6,7 +6,7 @@ open VersoSlides
 def main : IO UInt32 :=
   slidesMain
     (config := { theme := "white", slideNumber := true, transition := "none",
-                 width := 1600, height := 900,
+                 outputDir := "лекция1_слайды", width := 1600, height := 900,
                  extraCss := #[{
                    filename := "lecture.css"
                    contents := ⟨"

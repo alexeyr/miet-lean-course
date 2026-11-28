@@ -261,4 +261,4 @@ cabal.project.local~
 /.lake/
 
 # Include the bundled browser assets in the published lecture.
-!/_slides/**
+!/лекция1_слайды/**
