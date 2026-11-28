@@ -1,6 +1,10 @@
 name = "miet-lean-course"
 
 [[lean_lib]]
+name = "CourseSlides"
+allowNonModules = true
+
+[[lean_lib]]
 name = "лекция1_вычисления_утверждения_и_доказательства"
 allowNonModules = true
 

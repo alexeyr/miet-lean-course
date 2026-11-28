@@ -1,0 +1,60 @@
+import VersoSlides
+
+namespace CourseSlides
+
+@[role]
+meta def leanResult : Verso.Doc.Elab.RoleExpanderOf Unit
+  | _, contents => VersoSlides.classRole ⟨#["lean-result"]⟩ contents
+
+@[role]
+meta def leanInput : Verso.Doc.Elab.RoleExpanderOf Unit
+  | _, contents => VersoSlides.classRole ⟨#["lean-input"]⟩ contents
+
+@[directive]
+meta def answerStep : Verso.Doc.Elab.DirectiveExpanderOf Unit
+  | _, contents => VersoSlides.«class» ⟨#["answer-step"]⟩ contents
+
+def config (dir : System.FilePath) : VersoSlides.Config :=
+  { theme := "white", slideNumber := true, transition := "none",
+    outputDir := dir, width := 1600, height := 900,
+    -- Reuse the elaborated query results when an operator has a unique
+    -- documentation target on the current slide.
+    extraHead := #[.element "script" #[] (.raw "
+      document.addEventListener('DOMContentLoaded', () => {
+        for (const slide of document.querySelectorAll('.reveal .slides section:not(:has(section))')) {
+          const targets = new Map();
+          for (const token of slide.querySelectorAll('.command-output .const[data-verso-hover]')) {
+            const symbol = token.textContent;
+            const id = token.dataset.versoHover;
+            targets.set(symbol, targets.has(symbol) && targets.get(symbol) !== id ? null : id);
+          }
+          for (const op of slide.querySelectorAll('.operator:not([data-verso-hover])')) {
+            const id = targets.get(op.textContent);
+            if (id) op.dataset.versoHover = id;
+          }
+        }
+      });
+    ")],
+    extraCss := #[{
+      filename := "lecture.css"
+      contents := ⟨"
+        .reveal { font-size: 32px; font-family: Arial, sans-serif; }
+        .reveal .slides code.hl.lean.inline { background-color: white; }
+        .reveal .slides section { text-align: left; }
+        .reveal .slides h1, .reveal .slides h2 {
+          font-size: 1.48em; text-transform: none; color: #174b53;
+        }
+        .reveal .lean-result code { color: #006d77; font-family: monospace; }
+        .reveal section:has(.lean-result) .command-output { display: none; }
+        .reveal .slides pre:not(.code-with-panel pre),
+        .reveal .slides code.hl.lean.block,
+        .reveal .slides .info-panel { font-size: 32px; }
+        .reveal .slides .code-with-panel .token[data-verso-hover]:hover {
+          background-color: #cce9e6;
+        }
+        .reveal .lean-input code { color: #006d77; font-weight: bold; }
+        .reveal p { margin: .42em 0; }
+        .reveal .slides p.fragment { transition: none; will-change: auto; }
+      "⟩ }] }
+
+end CourseSlides
