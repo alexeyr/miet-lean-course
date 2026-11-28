@@ -1,0 +1,11 @@
+
+                     .reveal { font-size: 32px; }
+                     .reveal .slides section { text-align: left; }
+                     .reveal .slides h1, .reveal .slides h2 {
+                       font-size: 1.48em; text-transform: none; color: #174b53;
+                     }
+                     .reveal pre { font-size: .88em; }
+                     .reveal .lean-input code { color: #006d77; font-weight: bold; }
+                     .reveal .lean-keyword code { color: var(--verso-code-keyword-color, #8839a0); }
+                     .reveal p { margin: .42em 0; }
+                   

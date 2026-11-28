@@ -1,9 +1,24 @@
 name = "miet-lean-course"
 
+[[lean_lib]]
+name = "лекция1_вычисления_утверждения_и_доказательства"
+allowNonModules = true
+
+[[lean_exe]]
+name = "lecture1-slides"
+root = "«лекция1_слайды»"
+allowNonModules = true
+
 [[require]]
-name = "LeanTeX"
-git = "https://github.com/kmill/LeanTeX"
-rev = "d66db4582b6cb4d9fa0b6309168103a248a5fd46"
+name = "verso-slides"
+git = "https://github.com/leanprover/verso-slides"
+rev = "v4.36.0"
+
+# Verso 4.36 pins MD4Lean before its Windows DLL export fix (acmepjz/md4lean#24).
+[[require]]
+name = "MD4Lean"
+git = "https://github.com/acmepjz/md4lean"
+rev = "763052c72063a7bd494b7929d26026eb570f68f2"
 
 [[require]]
 name = "mathlib"
